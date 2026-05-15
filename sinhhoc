@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Đề Thi Sinh Học Trắc Nghiệm</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f7fb;
+    margin:0;
+    padding:20px;
+    color:#222;
+}
+
+h1{
+    text-align:center;
+    color:#0d47a1;
+    margin-bottom:40px;
+}
+
+.quiz-container{
+    max-width:1000px;
+    margin:auto;
+}
+
+.question-box{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    margin-bottom:25px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.08);
+}
+
+.question{
+    font-size:18px;
+    font-weight:bold;
+    margin-bottom:15px;
+}
+
+.bio-image{
+    width:100%;
+    max-width:350px;
+    border-radius:10px;
+    margin:15px 0;
+    border:2px solid #dce6ff;
+}
+
+.option{
+    display:block;
+    width:100%;
+    text-align:left;
+    padding:12px;
+    margin:10px 0;
+    border:none;
+    border-radius:8px;
+    background:#e8eefc;
+    cursor:pointer;
+    transition:0.3s;
+    font-size:16px;
+}
+
+.option:hover{
+    background:#d5e3ff;
+}
+
+.correct{
+    background:#4CAF50 !important;
+    color:white;
+}
+
+.wrong{
+    background:#f44336 !important;
+    color:white;
+}
+
+.disabled{
+    pointer-events:none;
+}
+
+.answer{
+    margin-top:15px;
+    padding:12px;
+    border-left:5px solid #0d47a1;
+    background:#eef4ff;
+    border-radius:8px;
+    display:none;
+}
+
+.score-box{
+    text-align:center;
+    font-size:28px;
+    font-weight:bold;
+    margin-top:40px;
+    color:#0d47a1;
+}
+
+.topic{
+    color:#1565c0;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>ĐỀ THI TRẮC NGHIỆM SINH HỌC</h1>
+
+<div class="quiz-container" id="quiz"></div>
+
+<div class="score-box" id="scoreBox"></div>
+
+<script>
+
+const questions = [
+
+{
+topic:"Nguyên phân",
+question:"1. Nguyên phân tạo ra bao nhiêu tế bào con?",
+image:"https://upload.wikimedia.org/wikipedia/commons/5/54/Mitosis_diagram.jpg",
+options:[
+"1 tế bào con",
+"2 tế bào con",
+"3 tế bào con",
+"4 tế bào con"
+],
+correct:1,
+explanation:"Nguyên phân tạo ra 2 tế bào con giống hệt tế bào mẹ."
+},
+
+{
+topic:"Nguyên phân",
+question:"2. Kì nào NST co xoắn cực đại?",
+image:"https://upload.wikimedia.org/wikipedia/commons/9/93/Mitosis_Stages.svg",
+options:[
+"Kì đầu",
+"Kì giữa",
+"Kì sau",
+"Kì cuối"
+],
+correct:1,
+explanation:"Ở kì giữa, NST co xoắn cực đại và xếp thành một hàng."
+},
+
+{
+topic:"Giảm phân",
+question:"3. Giảm phân xảy ra ở loại tế bào nào?",
+image:"https://upload.wikimedia.org/wikipedia/commons/3/3b/Meiosis_Overview.svg",
+options:[
+"Tế bào sinh dưỡng",
+"Tế bào thần kinh",
+"Tế bào sinh dục chín",
+"Tế bào máu"
+],
+correct:2,
+explanation:"Giảm phân diễn ra ở tế bào sinh dục chín để tạo giao tử."
+},
+
+{
+topic:"Giảm phân",
+question:"4. Giảm phân tạo ra bao nhiêu tế bào con?",
+image:"https://upload.wikimedia.org/wikipedia/commons/3/3b/Meiosis_Overview.svg",
+options:[
+"2",
+"3",
+"4",
+"8"
+],
+correct:2,
+explanation:"Giảm phân tạo ra 4 tế bào con đơn bội."
+},
+
+{
+topic:"Tiến hóa",
+question:"5. Ai là người đưa ra thuyết chọn lọc tự nhiên?",
+image:"https://upload.wikimedia.org/wikipedia/commons/3/3e/Charles_Darwin_by_Maull_and_Polyblank.jpg",
+options:[
+"Mendel",
+"Darwin",
+"Lamarck",
+"Morgan"
+],
+correct:1,
+explanation:"Charles Darwin là người đề xuất thuyết chọn lọc tự nhiên."
+},
+
+{
+topic:"Tiến hóa",
+question:"6. Theo Darwin, nhân tố chính của tiến hóa là:",
+image:"https://upload.wikimedia.org/wikipedia/commons/5/5c/Darwin_Tree_1837.png",
+options:[
+"Đột biến",
+"Chọn lọc tự nhiên",
+"Giao phối",
+"Cách li"
+],
+correct:1,
+explanation:"Darwin cho rằng chọn lọc tự nhiên là nhân tố chính."
+},
+
+{
+topic:"Quần thể",
+question:"7. Quần thể là:",
+image:"https://upload.wikimedia.org/wikipedia/commons/1/17/School_of_fish.jpg",
+options:[
+"Tập hợp nhiều loài",
+"Tập hợp cá thể cùng loài",
+"Tập hợp sinh vật khác loài",
+"Tập hợp vi sinh vật"
+],
+correct:1,
+explanation:"Quần thể gồm các cá thể cùng loài sống trong cùng khu vực."
+},
+
+{
+topic:"Quần thể",
+question:"8. Tần số alen là:",
+image:"https://upload.wikimedia.org/wikipedia/commons/6/6f/DNA_double_helix_vertical.png",
+options:[
+"Tỉ lệ kiểu hình",
+"Tỉ lệ kiểu gen",
+"Tỉ lệ một alen trong quần thể",
+"Tỉ lệ giao tử"
+],
+correct:2,
+explanation:"Tần số alen là tỉ lệ của một alen trong quần thể."
+},
+
+{
+topic:"Phép lai",
+question:"9. Lai một cặp tính trạng còn gọi là:",
+image:"https://upload.wikimedia.org/wikipedia/commons/8/87/Punnett_square_mendel_flowers.svg",
+options:[
+"Lai phân tích",
+"Lai thuận nghịch",
+"Lai một cặp tính trạng",
+"Lai xa"
+],
+correct:2,
+explanation:"Đây là phép lai nghiên cứu một tính trạng."
+},
+
+{
+topic:"Phép lai",
+question:"10. Menđen chọn đậu Hà Lan vì:",
+image:"https://upload.wikimedia.org/wikipedia/commons/7/79/Pisum_sativum.jpg",
+options:[
+"Dễ trồng",
+"Có nhiều tính trạng tương phản",
+"Tự thụ phấn cao",
+"Tất cả đều đúng"
+],
+correct:3,
+explanation:"Đậu Hà Lan có nhiều ưu điểm cho nghiên cứu di truyền."
+},
+
+{
+topic:"Nguyên phân",
+question:"11. Trong nguyên phân, NST nhân đôi ở:",
+image:"https://upload.wikimedia.org/wikipedia/commons/e/e5/Cell_cycle2.svg",
+options:[
+"Kì đầu",
+"Pha S",
+"Kì giữa",
+"Kì sau"
+],
+correct:1,
+explanation:"NST nhân đôi ở pha S của chu kì tế bào."
+},
+
+{
+topic:"Giảm phân",
+question:"12. Trao đổi chéo diễn ra ở:",
+image:"https://upload.wikimedia.org/wikipedia/commons/1/1b/Meiosis_Crossing_Over.svg",
+options:[
+"Kì đầu I",
+"Kì giữa I",
+"Kì sau II",
+"Kì cuối II"
+],
+correct:0,
+explanation:"Trao đổi chéo diễn ra ở kì đầu I."
+},
+
+{
+topic:"Tiến hóa",
+question:"13. Đơn vị tiến hóa cơ sở là:",
+image:"https://upload.wikimedia.org/wikipedia/commons/1/17/School_of_fish.jpg",
+options:[
+"Cá thể",
+"Quần thể",
+"Loài",
+"Hệ sinh thái"
+],
+correct:1,
+explanation:"Quần thể là đơn vị tiến hóa cơ sở."
+},
+
+{
+topic:"Quần thể",
+question:"14. Trạng thái cân bằng Hardy-Weinberg là:",
+image:"https://upload.wikimedia.org/wikipedia/commons/4/4e/Hardy_weinberg.svg",
+options:[
+"p+q=1",
+"p²+2pq+q²=1",
+"AA+Aa+aa=1",
+"Tất cả đúng"
+],
+correct:3,
+explanation:"Các công thức trên đều thuộc định luật Hardy-Weinberg."
+},
+
+{
+topic:"Phép lai",
+question:"15. Lai phân tích dùng để:",
+image:"https://upload.wikimedia.org/wikipedia/commons/8/87/Punnett_square_mendel_flowers.svg",
+options:[
+"Tạo biến dị",
+"Xác định kiểu gen",
+"Tạo giống mới",
+"Làm tăng ưu thế lai"
+],
+correct:1,
+explanation:"Lai phân tích giúp xác định kiểu gen."
+},
+
+{
+topic:"Nguyên phân",
+question:"16. Nguyên phân giúp:",
+image:"https://upload.wikimedia.org/wikipedia/commons/5/54/Mitosis_diagram.jpg",
+options:[
+"Tạo giao tử",
+"Tăng số lượng tế bào",
+"Giảm số lượng NST",
+"Tạo biến dị tổ hợp"
+],
+correct:1,
+explanation:"Nguyên phân làm tăng số lượng tế bào."
+},
+
+{
+topic:"Giảm phân",
+question:"17. Bộ NST của giao tử là:",
+image:"https://upload.wikimedia.org/wikipedia/commons/3/3b/Meiosis_Overview.svg",
+options:[
+"2n",
+"3n",
+"n",
+"4n"
+],
+correct:2,
+explanation:"Giao tử mang bộ NST đơn bội n."
+},
+
+{
+topic:"Tiến hóa",
+question:"18. Biến dị tổ hợp xuất hiện do:",
+image:"https://upload.wikimedia.org/wikipedia/commons/1/1b/Meiosis_Crossing_Over.svg",
+options:[
+"Nguyên phân",
+"Giảm phân và thụ tinh",
+"Đột biến gen",
+"Đột biến NST"
+],
+correct:1,
+explanation:"Biến dị tổ hợp hình thành nhờ giảm phân và thụ tinh."
+},
+
+{
+topic:"Quần thể",
+question:"19. Kích thước quần thể là:",
+image:"https://upload.wikimedia.org/wikipedia/commons/1/17/School_of_fish.jpg",
+options:[
+"Số lượng cá thể",
+"Số loài",
+"Số gen",
+"Số alen"
+],
+correct:0,
+explanation:"Kích thước quần thể là số lượng cá thể."
+},
+
+{
+topic:"Phép lai",
+question:"20. Tỉ lệ kiểu hình 3:1 xuất hiện ở phép lai:",
+image:"https://upload.wikimedia.org/wikipedia/commons/8/87/Punnett_square_mendel_flowers.svg",
+options:[
+"Aa × Aa",
+"AA × aa",
+"Aa × aa",
+"AA × AA"
+],
+correct:0,
+explanation:"Lai hai cơ thể dị hợp Aa × Aa cho tỉ lệ kiểu hình 3:1."
+}
+
+];
+
+const quizContainer = document.getElementById("quiz");
+const scoreBox = document.getElementById("scoreBox");
+
+let score = 0;
+let answered = 0;
+
+questions.forEach((q,index)=>{
+
+const box = document.createElement("div");
+box.className = "question-box";
+
+box.innerHTML = `
+<div class="topic">${q.topic}</div>
+<div class="question">${q.question}</div>
+<img class="bio-image" src="${q.image}" alt="Biology Image">
+`;
+
+q.options.forEach((option,i)=>{
+
+const button = document.createElement("button");
+button.className = "option";
+button.innerHTML = option;
+
+button.onclick = ()=>{
+
+const allOptions = box.querySelectorAll(".option");
+
+allOptions.forEach(btn=>{
+btn.classList.add("disabled");
+});
+
+if(i===q.correct){
+button.classList.add("correct");
+score++;
+}else{
+button.classList.add("wrong");
+allOptions[q.correct].classList.add("correct");
+}
+
+const answer = box.querySelector(".answer");
+answer.style.display = "block";
+
+answered++;
+
+if(answered===questions.length){
+scoreBox.innerHTML =
+`Bạn đạt <span style="color:green">${score}/${questions.length}</span> câu đúng!`;
+}
+
+};
+
+box.appendChild(button);
+
+});
+
+const answer = document.createElement("div");
+answer.className = "answer";
+
+answer.innerHTML = `
+<strong>Đáp án đúng:</strong> ${q.options[q.correct]}
+<br><br>
+<strong>Giải thích:</strong> ${q.explanation}
+`;
+
+box.appendChild(answer);
+
+quizContainer.appendChild(box);
+
+});
+
+</script>
+
+</body>
+</html>
